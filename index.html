@@ -1,0 +1,1474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rankr — Precision Ranking for Local Business</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@300;400;500;600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --white: #ffffff;
+  --ice: #f8f9fc;
+  --blue: #0066ff;
+  --midnight: #0d1117;
+  --gray: #94a3b8;
+  --border: #e2e5eb;
+  --serif: 'Instrument Serif', Georgia, serif;
+  --mono: 'JetBrains Mono', monospace;
+  --sans: 'Plus Jakarta Sans', sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: var(--sans);
+  color: var(--midnight);
+  background: var(--white);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+/* ---- GRID UTILITY ---- */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 40px;
+}
+
+@media (max-width: 768px) {
+  .container { padding: 0 24px; }
+}
+
+/* ---- REVEAL ANIMATION ---- */
+.reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 350ms ease-out, transform 350ms ease-out;
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ================================================================
+   1. NAVIGATION
+   ================================================================ */
+nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  border-top: 2px solid var(--blue);
+  background: rgba(255,255,255,0);
+  transition: background 300ms ease-out, box-shadow 300ms ease-out;
+}
+nav.scrolled {
+  background: rgba(255,255,255,0.98);
+  box-shadow: 0 1px 0 var(--border);
+}
+nav .nav-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 72px;
+}
+.nav-logo {
+  font-family: var(--serif);
+  font-size: 26px;
+  color: var(--midnight);
+  text-decoration: none;
+  letter-spacing: -0.5px;
+}
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 40px;
+  list-style: none;
+}
+.nav-links a {
+  font-family: var(--sans);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--midnight);
+  text-decoration: none;
+  transition: color 200ms ease-out;
+  letter-spacing: -0.1px;
+}
+.nav-links a:hover {
+  color: var(--blue);
+}
+.nav-cta {
+  font-family: var(--sans) !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  background: var(--blue);
+  color: var(--white) !important;
+  padding: 10px 24px;
+  border-radius: 0;
+  transition: background 200ms ease-out !important;
+}
+.nav-cta:hover {
+  background: #0052cc !important;
+  color: var(--white) !important;
+}
+
+/* Mobile nav */
+.nav-toggle {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+}
+.nav-toggle span {
+  display: block;
+  width: 20px;
+  height: 1.5px;
+  background: var(--midnight);
+  margin: 5px 0;
+  transition: all 200ms ease-out;
+}
+
+@media (max-width: 768px) {
+  .nav-toggle { display: block; }
+  .nav-links {
+    position: fixed;
+    top: 72px;
+    left: 0;
+    right: 0;
+    background: var(--white);
+    flex-direction: column;
+    padding: 32px 24px;
+    gap: 24px;
+    border-bottom: 1px solid var(--border);
+    transform: translateY(-100%);
+    opacity: 0;
+    pointer-events: none;
+    transition: all 300ms ease-out;
+  }
+  .nav-links.open {
+    transform: translateY(0);
+    opacity: 1;
+    pointer-events: all;
+  }
+}
+
+/* ================================================================
+   2. HERO
+   ================================================================ */
+.hero {
+  padding: 180px 0 120px;
+  position: relative;
+  overflow: hidden;
+  background:
+    linear-gradient(90deg, var(--border) 1px, transparent 1px),
+    linear-gradient(180deg, var(--border) 1px, transparent 1px);
+  background-size: 80px 80px;
+  background-position: center center;
+}
+.hero::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at center, rgba(255,255,255,0) 0%, var(--white) 70%);
+  pointer-events: none;
+}
+.hero .container {
+  position: relative;
+  z-index: 1;
+}
+.hero h1 {
+  font-family: var(--serif);
+  font-size: clamp(48px, 7vw, 88px);
+  line-height: 1.05;
+  letter-spacing: -2px;
+  color: var(--midnight);
+  max-width: 800px;
+  margin-bottom: 24px;
+}
+.hero-sub {
+  font-family: var(--sans);
+  font-size: 18px;
+  font-weight: 400;
+  color: var(--gray);
+  max-width: 520px;
+  margin-bottom: 56px;
+  line-height: 1.7;
+}
+.hero-cta {
+  display: inline-block;
+  font-family: var(--sans);
+  font-size: 15px;
+  font-weight: 600;
+  background: var(--blue);
+  color: var(--white);
+  padding: 16px 40px;
+  text-decoration: none;
+  transition: background 200ms ease-out;
+  margin-bottom: 80px;
+}
+.hero-cta:hover {
+  background: #0052cc;
+}
+.hero-metrics {
+  display: flex;
+  gap: 48px;
+  flex-wrap: wrap;
+  border-top: 1px solid var(--border);
+  padding-top: 40px;
+}
+.hero-metric {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.hero-metric .metric-value {
+  font-family: var(--mono);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--midnight);
+  letter-spacing: -0.5px;
+}
+.hero-metric .metric-label {
+  font-family: var(--sans);
+  font-size: 13px;
+  color: var(--gray);
+}
+
+@media (max-width: 768px) {
+  .hero { padding: 140px 0 80px; }
+  .hero-metrics { gap: 32px; }
+}
+
+/* ================================================================
+   3. CLIENTS ROW
+   ================================================================ */
+.clients {
+  padding: 48px 0;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+.clients-inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0;
+}
+.clients-inner span {
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--gray);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 8px 32px;
+  border-right: 1px solid var(--border);
+}
+.clients-inner span:last-child {
+  border-right: none;
+}
+
+@media (max-width: 768px) {
+  .clients-inner span {
+    padding: 8px 20px;
+    font-size: 11px;
+  }
+}
+
+/* ================================================================
+   4. SERVICES
+   ================================================================ */
+.services {
+  padding: 120px 0;
+}
+.section-label {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--blue);
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+.section-title {
+  font-family: var(--serif);
+  font-size: clamp(32px, 4vw, 48px);
+  letter-spacing: -1px;
+  color: var(--midnight);
+  margin-bottom: 64px;
+  line-height: 1.15;
+}
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+}
+.service-card {
+  border: 1px solid var(--border);
+  border-right: none;
+  padding: 48px 40px;
+  position: relative;
+  transition: border-color 200ms ease-out;
+}
+.service-card::before {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--blue);
+  transform: scaleX(0);
+  transition: transform 250ms ease-out;
+}
+.service-card:hover::before {
+  transform: scaleX(1);
+}
+.service-card:last-child {
+  border-right: 1px solid var(--border);
+}
+.service-num {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--gray);
+  margin-bottom: 32px;
+}
+.service-card h3 {
+  font-family: var(--serif);
+  font-size: 28px;
+  letter-spacing: -0.5px;
+  margin-bottom: 16px;
+  color: var(--midnight);
+}
+.service-card p {
+  font-family: var(--sans);
+  font-size: 15px;
+  color: var(--gray);
+  line-height: 1.7;
+  margin-bottom: 32px;
+}
+.service-link {
+  font-family: var(--sans);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--blue);
+  text-decoration: none;
+  transition: color 200ms ease-out;
+}
+.service-link:hover {
+  color: #0052cc;
+}
+
+@media (max-width: 768px) {
+  .services-grid { grid-template-columns: 1fr; }
+  .service-card {
+    border-right: 1px solid var(--border);
+    border-bottom: none;
+  }
+  .service-card:last-child {
+    border-bottom: 1px solid var(--border);
+  }
+}
+
+/* ================================================================
+   5. METHOD
+   ================================================================ */
+.method {
+  padding: 120px 0;
+  background: var(--ice);
+}
+.method-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+  position: relative;
+}
+.method-step {
+  border: 1px solid var(--border);
+  border-right: none;
+  padding: 48px 32px;
+  background: var(--white);
+  position: relative;
+}
+.method-step:last-child {
+  border-right: 1px solid var(--border);
+}
+.method-step::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: -12px;
+  width: 24px;
+  height: 1px;
+  background: var(--blue);
+  z-index: 2;
+}
+.method-step:last-child::after {
+  display: none;
+}
+.step-num {
+  font-family: var(--mono);
+  font-size: 40px;
+  font-weight: 300;
+  color: var(--blue);
+  line-height: 1;
+  margin-bottom: 24px;
+  opacity: 0.6;
+}
+.method-step h3 {
+  font-family: var(--serif);
+  font-size: 22px;
+  letter-spacing: -0.3px;
+  margin-bottom: 12px;
+  color: var(--midnight);
+}
+.method-step p {
+  font-family: var(--sans);
+  font-size: 14px;
+  color: var(--gray);
+  line-height: 1.7;
+}
+
+@media (max-width: 960px) {
+  .method-grid { grid-template-columns: repeat(2, 1fr); }
+  .method-step:nth-child(2) { border-right: 1px solid var(--border); }
+  .method-step:nth-child(2)::after { display: none; }
+  .method-step:nth-child(1),
+  .method-step:nth-child(2) { border-bottom: none; }
+}
+@media (max-width: 600px) {
+  .method-grid { grid-template-columns: 1fr; }
+  .method-step {
+    border-right: 1px solid var(--border);
+    border-bottom: none;
+  }
+  .method-step:last-child { border-bottom: 1px solid var(--border); }
+  .method-step::after { display: none; }
+}
+
+/* ================================================================
+   6. DATA / RESULTS
+   ================================================================ */
+.results {
+  padding: 120px 0;
+  background: var(--midnight);
+  color: var(--white);
+}
+.results .section-label {
+  color: var(--blue);
+}
+.results .section-title {
+  color: var(--white);
+}
+.results-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 32px;
+  margin-bottom: 64px;
+}
+.result-stat {
+  text-align: left;
+}
+.result-stat .stat-value {
+  font-family: var(--mono);
+  font-size: clamp(36px, 5vw, 56px);
+  font-weight: 400;
+  color: var(--white);
+  line-height: 1;
+  margin-bottom: 8px;
+  letter-spacing: -2px;
+}
+.result-stat .stat-label {
+  font-family: var(--sans);
+  font-size: 14px;
+  color: var(--gray);
+}
+
+/* Bar charts */
+.data-bars {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 48px;
+}
+.data-bar-group h4 {
+  font-family: var(--sans);
+  font-size: 14px;
+  font-weight: 500;
+  color: #cbd5e1;
+  margin-bottom: 20px;
+}
+.data-bar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+.data-bar-label {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--gray);
+  width: 64px;
+  flex-shrink: 0;
+}
+.data-bar-track {
+  flex: 1;
+  height: 4px;
+  background: rgba(255,255,255,0.08);
+  position: relative;
+}
+.data-bar-fill {
+  height: 100%;
+  background: var(--blue);
+  transition: width 1s ease-out;
+  width: 0;
+}
+.data-bar-fill.animated {
+  /* width set inline */
+}
+.data-bar-value {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--white);
+  width: 40px;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+@media (max-width: 768px) {
+  .results-grid { grid-template-columns: repeat(2, 1fr); gap: 40px; }
+  .data-bars { grid-template-columns: 1fr; gap: 32px; }
+}
+
+/* ================================================================
+   7. TESTIMONIALS
+   ================================================================ */
+.testimonials {
+  padding: 120px 0;
+}
+.testimonials-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+}
+.testimonial-card {
+  border: 1px solid var(--border);
+  border-right: none;
+  padding: 48px 36px;
+}
+.testimonial-card:last-child {
+  border-right: 1px solid var(--border);
+}
+.testimonial-quote-mark {
+  font-family: var(--serif);
+  font-size: 64px;
+  color: var(--blue);
+  line-height: 1;
+  margin-bottom: 8px;
+  opacity: 0.5;
+}
+.testimonial-text {
+  font-family: var(--serif);
+  font-size: 18px;
+  line-height: 1.6;
+  color: var(--midnight);
+  margin-bottom: 32px;
+  font-style: italic;
+}
+.testimonial-metric {
+  font-family: var(--mono);
+  font-size: 24px;
+  font-weight: 500;
+  color: var(--blue);
+  margin-bottom: 20px;
+  letter-spacing: -1px;
+}
+.testimonial-name {
+  font-family: var(--sans);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--midnight);
+  margin-bottom: 2px;
+}
+.testimonial-biz {
+  font-family: var(--sans);
+  font-size: 13px;
+  color: var(--gray);
+}
+
+@media (max-width: 768px) {
+  .testimonials-grid { grid-template-columns: 1fr; }
+  .testimonial-card {
+    border-right: 1px solid var(--border);
+    border-bottom: none;
+  }
+  .testimonial-card:last-child { border-bottom: 1px solid var(--border); }
+}
+
+/* ================================================================
+   8. PRICING
+   ================================================================ */
+.pricing {
+  padding: 120px 0;
+  background: var(--ice);
+}
+.pricing-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+}
+.pricing-card {
+  border: 1px solid var(--border);
+  border-right: none;
+  padding: 48px 40px;
+  background: var(--white);
+  position: relative;
+}
+.pricing-card:last-child {
+  border-right: 1px solid var(--border);
+}
+.pricing-card.featured {
+  border-top: 3px solid var(--blue);
+}
+.pricing-badge {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--blue);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  background: rgba(0, 102, 255, 0.06);
+  padding: 6px 12px;
+  margin-bottom: 24px;
+}
+.pricing-tier {
+  font-family: var(--sans);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--midnight);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+.pricing-price {
+  font-family: var(--serif);
+  font-size: 48px;
+  color: var(--midnight);
+  letter-spacing: -2px;
+  margin-bottom: 4px;
+}
+.pricing-freq {
+  font-family: var(--sans);
+  font-size: 13px;
+  color: var(--gray);
+  margin-bottom: 36px;
+}
+.pricing-features {
+  list-style: none;
+  margin-bottom: 40px;
+}
+.pricing-features li {
+  font-family: var(--sans);
+  font-size: 14px;
+  color: #64748b;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+.pricing-features li:last-child {
+  border-bottom: none;
+}
+.pricing-check {
+  color: var(--blue);
+  font-weight: 700;
+  font-size: 14px;
+  flex-shrink: 0;
+  line-height: 1.6;
+}
+.pricing-cta {
+  display: block;
+  text-align: center;
+  font-family: var(--sans);
+  font-size: 14px;
+  font-weight: 600;
+  padding: 14px 24px;
+  text-decoration: none;
+  transition: all 200ms ease-out;
+  border: 1px solid var(--border);
+  color: var(--midnight);
+  background: var(--white);
+}
+.pricing-cta:hover {
+  border-color: var(--midnight);
+}
+.pricing-card.featured .pricing-cta {
+  background: var(--blue);
+  border-color: var(--blue);
+  color: var(--white);
+}
+.pricing-card.featured .pricing-cta:hover {
+  background: #0052cc;
+}
+
+@media (max-width: 768px) {
+  .pricing-grid { grid-template-columns: 1fr; }
+  .pricing-card {
+    border-right: 1px solid var(--border);
+    border-bottom: none;
+  }
+  .pricing-card:last-child { border-bottom: 1px solid var(--border); }
+}
+
+/* ================================================================
+   9. FAQ
+   ================================================================ */
+.faq {
+  padding: 120px 0;
+}
+.faq-list {
+  max-width: 720px;
+}
+.faq-item {
+  border-bottom: 1px solid var(--border);
+}
+.faq-question {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 24px 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  font-family: var(--sans);
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--midnight);
+  gap: 24px;
+  transition: color 200ms ease-out;
+}
+.faq-question:hover {
+  color: var(--blue);
+}
+.faq-icon {
+  font-family: var(--mono);
+  font-size: 18px;
+  color: var(--blue);
+  flex-shrink: 0;
+  transition: transform 300ms ease-out;
+  width: 20px;
+  text-align: center;
+}
+.faq-item.open .faq-icon {
+  transform: rotate(45deg);
+}
+.faq-answer {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 350ms ease-out;
+}
+.faq-answer-inner {
+  padding: 0 0 24px;
+  font-family: var(--sans);
+  font-size: 15px;
+  color: var(--gray);
+  line-height: 1.7;
+  max-width: 600px;
+}
+
+/* ================================================================
+   10. CTA
+   ================================================================ */
+.final-cta {
+  padding: 120px 0;
+  background: var(--blue);
+}
+.final-cta h2 {
+  font-family: var(--serif);
+  font-size: clamp(32px, 4vw, 48px);
+  color: var(--white);
+  letter-spacing: -1px;
+  margin-bottom: 12px;
+}
+.final-cta p {
+  font-family: var(--sans);
+  font-size: 16px;
+  color: rgba(255,255,255,0.7);
+  margin-bottom: 40px;
+}
+.cta-form {
+  display: flex;
+  gap: 0;
+  max-width: 480px;
+}
+.cta-form input {
+  flex: 1;
+  padding: 16px 20px;
+  font-family: var(--sans);
+  font-size: 15px;
+  border: 1px solid rgba(255,255,255,0.25);
+  border-right: none;
+  background: rgba(255,255,255,0.1);
+  color: var(--white);
+  outline: none;
+  transition: border-color 200ms ease-out;
+}
+.cta-form input::placeholder {
+  color: rgba(255,255,255,0.4);
+}
+.cta-form input:focus {
+  border-color: rgba(255,255,255,0.6);
+}
+.cta-form button {
+  font-family: var(--sans);
+  font-size: 15px;
+  font-weight: 600;
+  padding: 16px 32px;
+  background: var(--white);
+  color: var(--blue);
+  border: none;
+  cursor: pointer;
+  transition: background 200ms ease-out;
+  white-space: nowrap;
+}
+.cta-form button:hover {
+  background: #e8ecf2;
+}
+
+@media (max-width: 600px) {
+  .cta-form {
+    flex-direction: column;
+  }
+  .cta-form input {
+    border-right: 1px solid rgba(255,255,255,0.25);
+    border-bottom: none;
+  }
+}
+
+/* ================================================================
+   11. FOOTER
+   ================================================================ */
+footer {
+  padding: 80px 0 48px;
+  border-top: 1px solid var(--border);
+}
+.footer-grid {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1fr 1fr;
+  gap: 48px;
+  margin-bottom: 64px;
+}
+.footer-brand {
+  font-family: var(--serif);
+  font-size: 22px;
+  color: var(--midnight);
+  margin-bottom: 12px;
+}
+.footer-brand-desc {
+  font-family: var(--sans);
+  font-size: 14px;
+  color: var(--gray);
+  line-height: 1.7;
+  max-width: 260px;
+}
+.footer-col h4 {
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--midnight);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 20px;
+}
+.footer-col a {
+  display: block;
+  font-family: var(--sans);
+  font-size: 14px;
+  color: var(--gray);
+  text-decoration: none;
+  padding: 4px 0;
+  transition: color 200ms ease-out;
+}
+.footer-col a:hover {
+  color: var(--midnight);
+}
+.footer-bottom {
+  border-top: 1px solid var(--border);
+  padding-top: 32px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.footer-copy {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--gray);
+}
+.footer-legal {
+  display: flex;
+  gap: 24px;
+}
+.footer-legal a {
+  font-family: var(--sans);
+  font-size: 13px;
+  color: var(--gray);
+  text-decoration: none;
+  transition: color 200ms ease-out;
+}
+.footer-legal a:hover {
+  color: var(--midnight);
+}
+
+@media (max-width: 768px) {
+  .footer-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+  }
+}
+@media (max-width: 480px) {
+  .footer-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     1. NAVIGATION
+     ============================================================ -->
+<nav id="navbar">
+  <div class="container nav-inner">
+    <a href="#" class="nav-logo">Rankr</a>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#services">Solutions</a></li>
+      <li><a href="#method">Method</a></li>
+      <li><a href="#pricing">Pricing</a></li>
+      <li><a href="#results">Results</a></li>
+      <li><a href="#cta" class="nav-cta">Start Audit &rarr;</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- ============================================================
+     2. HERO
+     ============================================================ -->
+<section class="hero">
+  <div class="container">
+    <h1 class="reveal">Precision Ranking<br>for Local Business.</h1>
+    <p class="hero-sub reveal">We engineer search visibility with surgical accuracy. AEO, SEO, and GEO strategies built on data, delivered with precision.</p>
+    <a href="#cta" class="hero-cta reveal">Start Your Audit &rarr;</a>
+    <div class="hero-metrics reveal">
+      <div class="hero-metric">
+        <span class="metric-value"><span class="count-up" data-target="2847" data-separator=",">0</span> businesses ranked</span>
+        <span class="metric-label">Active clients</span>
+      </div>
+      <div class="hero-metric">
+        <span class="metric-value"><span class="count-up" data-target="312">0</span>% avg improvement</span>
+        <span class="metric-label">Organic visibility</span>
+      </div>
+      <div class="hero-metric">
+        <span class="metric-value">$<span class="count-up" data-target="47">0</span>M revenue driven</span>
+        <span class="metric-label">Client revenue impact</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     3. CLIENTS
+     ============================================================ -->
+<section class="clients">
+  <div class="container">
+    <div class="clients-inner">
+      <span>Meridian Co</span>
+      <span>Vestry</span>
+      <span>Halcyon</span>
+      <span>Arcline</span>
+      <span>Brevity</span>
+      <span>Northvane</span>
+      <span>Palomar</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     4. SERVICES
+     ============================================================ -->
+<section class="services" id="services">
+  <div class="container">
+    <p class="section-label reveal">Solutions</p>
+    <h2 class="section-title reveal">Three disciplines.<br>One system.</h2>
+    <div class="services-grid">
+      <div class="service-card reveal">
+        <p class="service-num">01</p>
+        <h3>AEO</h3>
+        <p>Answer Engine Optimization. We position your business as the definitive answer across AI-powered search, voice assistants, and featured snippets.</p>
+        <a href="#" class="service-link">Learn more &rarr;</a>
+      </div>
+      <div class="service-card reveal">
+        <p class="service-num">02</p>
+        <h3>SEO</h3>
+        <p>Search Engine Optimization refined to a science. Technical audits, content architecture, and authority building calibrated for local dominance.</p>
+        <a href="#" class="service-link">Learn more &rarr;</a>
+      </div>
+      <div class="service-card reveal">
+        <p class="service-num">03</p>
+        <h3>GEO</h3>
+        <p>Generative Engine Optimization. We ensure your business surfaces in AI-generated results from ChatGPT, Gemini, Perplexity, and beyond.</p>
+        <a href="#" class="service-link">Learn more &rarr;</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     5. METHOD
+     ============================================================ -->
+<section class="method" id="method">
+  <div class="container">
+    <p class="section-label reveal">Process</p>
+    <h2 class="section-title reveal">Our Method</h2>
+    <div class="method-grid">
+      <div class="method-step reveal">
+        <p class="step-num">01</p>
+        <h3>Audit</h3>
+        <p>We analyze everything. Technical infrastructure, content gaps, competitive landscape, citation accuracy, and AI readiness.</p>
+      </div>
+      <div class="method-step reveal">
+        <p class="step-num">02</p>
+        <h3>Strategy</h3>
+        <p>We build the blueprint. A precise roadmap with clear milestones, priority actions, and expected outcomes at every stage.</p>
+      </div>
+      <div class="method-step reveal">
+        <p class="step-num">03</p>
+        <h3>Execute</h3>
+        <p>We implement with precision. Every optimization is measured, every change documented, every element purposeful.</p>
+      </div>
+      <div class="method-step reveal">
+        <p class="step-num">04</p>
+        <h3>Measure</h3>
+        <p>We track every metric. Real-time dashboards, weekly reports, and monthly strategy sessions to ensure continuous gains.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     6. DATA / RESULTS
+     ============================================================ -->
+<section class="results" id="results">
+  <div class="container">
+    <p class="section-label reveal">Results</p>
+    <h2 class="section-title reveal">The numbers speak.</h2>
+    <div class="results-grid reveal">
+      <div class="result-stat">
+        <div class="stat-value"><span class="count-up" data-target="94">0</span>%</div>
+        <div class="stat-label">Client retention rate</div>
+      </div>
+      <div class="result-stat">
+        <div class="stat-value">#<span class="count-up" data-target="3">0</span></div>
+        <div class="stat-label">Avg. ranking position</div>
+      </div>
+      <div class="result-stat">
+        <div class="stat-value"><span class="count-up" data-target="247">0</span>%</div>
+        <div class="stat-label">Avg. traffic increase</div>
+      </div>
+      <div class="result-stat">
+        <div class="stat-value"><span class="count-up" data-target="18">0</span>x</div>
+        <div class="stat-label">Return on investment</div>
+      </div>
+    </div>
+    <div class="data-bars reveal">
+      <div class="data-bar-group">
+        <h4>Ranking Improvement by Channel</h4>
+        <div class="data-bar">
+          <span class="data-bar-label">Google</span>
+          <div class="data-bar-track"><div class="data-bar-fill" data-width="92%"></div></div>
+          <span class="data-bar-value">92%</span>
+        </div>
+        <div class="data-bar">
+          <span class="data-bar-label">ChatGPT</span>
+          <div class="data-bar-track"><div class="data-bar-fill" data-width="78%"></div></div>
+          <span class="data-bar-value">78%</span>
+        </div>
+        <div class="data-bar">
+          <span class="data-bar-label">Gemini</span>
+          <div class="data-bar-track"><div class="data-bar-fill" data-width="84%"></div></div>
+          <span class="data-bar-value">84%</span>
+        </div>
+        <div class="data-bar">
+          <span class="data-bar-label">Voice</span>
+          <div class="data-bar-track"><div class="data-bar-fill" data-width="67%"></div></div>
+          <span class="data-bar-value">67%</span>
+        </div>
+        <div class="data-bar">
+          <span class="data-bar-label">Maps</span>
+          <div class="data-bar-track"><div class="data-bar-fill" data-width="96%"></div></div>
+          <span class="data-bar-value">96%</span>
+        </div>
+      </div>
+      <div class="data-bar-group">
+        <h4>Conversion Rate by Industry</h4>
+        <div class="data-bar">
+          <span class="data-bar-label">Legal</span>
+          <div class="data-bar-track"><div class="data-bar-fill" data-width="88%"></div></div>
+          <span class="data-bar-value">8.4%</span>
+        </div>
+        <div class="data-bar">
+          <span class="data-bar-label">Medical</span>
+          <div class="data-bar-track"><div class="data-bar-fill" data-width="82%"></div></div>
+          <span class="data-bar-value">7.2%</span>
+        </div>
+        <div class="data-bar">
+          <span class="data-bar-label">Dental</span>
+          <div class="data-bar-track"><div class="data-bar-fill" data-width="91%"></div></div>
+          <span class="data-bar-value">9.1%</span>
+        </div>
+        <div class="data-bar">
+          <span class="data-bar-label">Home Svc</span>
+          <div class="data-bar-track"><div class="data-bar-fill" data-width="75%"></div></div>
+          <span class="data-bar-value">6.8%</span>
+        </div>
+        <div class="data-bar">
+          <span class="data-bar-label">Retail</span>
+          <div class="data-bar-track"><div class="data-bar-fill" data-width="69%"></div></div>
+          <span class="data-bar-value">5.9%</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     7. TESTIMONIALS
+     ============================================================ -->
+<section class="testimonials" id="testimonials">
+  <div class="container">
+    <p class="section-label reveal">Testimonials</p>
+    <h2 class="section-title reveal">What our clients measure.</h2>
+    <div class="testimonials-grid">
+      <div class="testimonial-card reveal">
+        <div class="testimonial-quote-mark">&ldquo;</div>
+        <p class="testimonial-text">Rankr transformed our online presence. We went from page three to the top of every local search in under four months.</p>
+        <div class="testimonial-metric">+412% traffic</div>
+        <p class="testimonial-name">Sarah Chen</p>
+        <p class="testimonial-biz">Meridian Dental Group</p>
+      </div>
+      <div class="testimonial-card reveal">
+        <div class="testimonial-quote-mark">&ldquo;</div>
+        <p class="testimonial-text">The precision is real. Every recommendation was data-backed, every result was measurable. No fluff, just outcomes.</p>
+        <div class="testimonial-metric">23x ROI</div>
+        <p class="testimonial-name">Marcus Rivera</p>
+        <p class="testimonial-biz">Vestry Legal Partners</p>
+      </div>
+      <div class="testimonial-card reveal">
+        <div class="testimonial-quote-mark">&ldquo;</div>
+        <p class="testimonial-text">Their AEO strategy put us in AI-generated results across every major platform. We were first to market in our area.</p>
+        <div class="testimonial-metric">#1 AI ranking</div>
+        <p class="testimonial-name">Elena Voss</p>
+        <p class="testimonial-biz">Halcyon Home Services</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     8. PRICING
+     ============================================================ -->
+<section class="pricing" id="pricing">
+  <div class="container">
+    <p class="section-label reveal">Pricing</p>
+    <h2 class="section-title reveal">Clear pricing.<br>No ambiguity.</h2>
+    <div class="pricing-grid">
+      <div class="pricing-card reveal">
+        <p class="pricing-tier">Starter</p>
+        <p class="pricing-price">$497</p>
+        <p class="pricing-freq">per month</p>
+        <ul class="pricing-features">
+          <li><span class="pricing-check">&check;</span> Core SEO optimization</li>
+          <li><span class="pricing-check">&check;</span> Monthly performance report</li>
+          <li><span class="pricing-check">&check;</span> Google Business Profile</li>
+          <li><span class="pricing-check">&check;</span> 5 target keywords</li>
+          <li><span class="pricing-check">&check;</span> Technical audit</li>
+        </ul>
+        <a href="#cta" class="pricing-cta">Get Started &rarr;</a>
+      </div>
+      <div class="pricing-card featured reveal">
+        <span class="pricing-badge">Recommended</span>
+        <p class="pricing-tier">Professional</p>
+        <p class="pricing-price">$997</p>
+        <p class="pricing-freq">per month</p>
+        <ul class="pricing-features">
+          <li><span class="pricing-check">&check;</span> AEO + SEO + GEO</li>
+          <li><span class="pricing-check">&check;</span> Weekly reporting dashboard</li>
+          <li><span class="pricing-check">&check;</span> AI search optimization</li>
+          <li><span class="pricing-check">&check;</span> 25 target keywords</li>
+          <li><span class="pricing-check">&check;</span> Content strategy</li>
+          <li><span class="pricing-check">&check;</span> Dedicated strategist</li>
+        </ul>
+        <a href="#cta" class="pricing-cta">Get Started &rarr;</a>
+      </div>
+      <div class="pricing-card reveal">
+        <p class="pricing-tier">Enterprise</p>
+        <p class="pricing-price">Custom</p>
+        <p class="pricing-freq">tailored to scale</p>
+        <ul class="pricing-features">
+          <li><span class="pricing-check">&check;</span> Full AEO + SEO + GEO suite</li>
+          <li><span class="pricing-check">&check;</span> Real-time analytics</li>
+          <li><span class="pricing-check">&check;</span> Multi-location support</li>
+          <li><span class="pricing-check">&check;</span> Unlimited keywords</li>
+          <li><span class="pricing-check">&check;</span> API access</li>
+          <li><span class="pricing-check">&check;</span> Priority support team</li>
+        </ul>
+        <a href="#cta" class="pricing-cta">Contact Us &rarr;</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     9. FAQ
+     ============================================================ -->
+<section class="faq" id="faq">
+  <div class="container">
+    <p class="section-label reveal">FAQ</p>
+    <h2 class="section-title reveal">Common questions.</h2>
+    <div class="faq-list">
+      <div class="faq-item reveal">
+        <button class="faq-question">
+          <span>What is AEO and why does it matter?</span>
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">Answer Engine Optimization ensures your business appears in AI-generated responses from tools like ChatGPT, Google AI Overviews, and Perplexity. As more consumers use AI to find local services, AEO is becoming essential for visibility.</div>
+        </div>
+      </div>
+      <div class="faq-item reveal">
+        <button class="faq-question">
+          <span>How quickly will I see results?</span>
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">Most clients see measurable improvements within 60-90 days. Local SEO gains often appear sooner. We provide weekly progress tracking from day one so you can monitor momentum in real time.</div>
+        </div>
+      </div>
+      <div class="faq-item reveal">
+        <button class="faq-question">
+          <span>How is Rankr different from other agencies?</span>
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">We combine three disciplines — AEO, SEO, and GEO — into one integrated system. Most agencies focus on traditional SEO alone. Our approach ensures your business ranks across every search surface, including AI assistants and generative results.</div>
+        </div>
+      </div>
+      <div class="faq-item reveal">
+        <button class="faq-question">
+          <span>Do you work with businesses outside the US?</span>
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">Yes. While our core focus is local business optimization, our methods apply to any market. We currently serve clients across the US, Canada, UK, and Australia with location-specific strategies.</div>
+        </div>
+      </div>
+      <div class="faq-item reveal">
+        <button class="faq-question">
+          <span>What happens if I want to cancel?</span>
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">No lock-in contracts. You can cancel anytime with 30 days notice. We believe in earning your business every month through measurable results, not contractual obligations.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     10. CTA
+     ============================================================ -->
+<section class="final-cta" id="cta">
+  <div class="container">
+    <h2 class="reveal">Start ranking with precision.</h2>
+    <p class="reveal">Enter your email and we will begin with a complimentary audit.</p>
+    <form class="cta-form reveal" onsubmit="event.preventDefault()">
+      <input type="email" placeholder="you@business.com" required>
+      <button type="submit">Begin &rarr;</button>
+    </form>
+  </div>
+</section>
+
+<!-- ============================================================
+     11. FOOTER
+     ============================================================ -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <p class="footer-brand">Rankr</p>
+        <p class="footer-brand-desc">Precision ranking for local businesses. AEO, SEO, and GEO engineered as one system.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Solutions</h4>
+        <a href="#">Answer Engine Optimization</a>
+        <a href="#">Search Engine Optimization</a>
+        <a href="#">Generative Engine Optimization</a>
+        <a href="#">Local Search</a>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <a href="#">About</a>
+        <a href="#">Method</a>
+        <a href="#">Careers</a>
+        <a href="#">Contact</a>
+      </div>
+      <div class="footer-col">
+        <h4>Resources</h4>
+        <a href="#">Blog</a>
+        <a href="#">Case Studies</a>
+        <a href="#">Documentation</a>
+        <a href="#">Status</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span class="footer-copy">&copy; 2026 Rankr. All rights reserved.</span>
+      <div class="footer-legal">
+        <a href="#">Privacy</a>
+        <a href="#">Terms</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- ============================================================
+     JAVASCRIPT
+     ============================================================ -->
+<script>
+(function() {
+  'use strict';
+
+  /* ---- Navbar scroll ---- */
+  const nav = document.getElementById('navbar');
+  let lastScroll = 0;
+  function onScroll() {
+    if (window.scrollY > 40) {
+      nav.classList.add('scrolled');
+    } else {
+      nav.classList.remove('scrolled');
+    }
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+
+  /* ---- Mobile nav toggle ---- */
+  const toggle = document.getElementById('navToggle');
+  const links = document.getElementById('navLinks');
+  toggle.addEventListener('click', function() {
+    links.classList.toggle('open');
+  });
+  links.querySelectorAll('a').forEach(function(a) {
+    a.addEventListener('click', function() {
+      links.classList.remove('open');
+    });
+  });
+
+  /* ---- Reveal on scroll ---- */
+  const reveals = document.querySelectorAll('.reveal');
+  const revealObserver = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        revealObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15 });
+  reveals.forEach(function(el) { revealObserver.observe(el); });
+
+  /* ---- Count-up animation ---- */
+  const countEls = document.querySelectorAll('.count-up');
+  const countObserver = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        animateCount(entry.target);
+        countObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.5 });
+  countEls.forEach(function(el) { countObserver.observe(el); });
+
+  function animateCount(el) {
+    const target = parseInt(el.getAttribute('data-target'), 10);
+    const sep = el.getAttribute('data-separator');
+    const duration = 1200;
+    const start = performance.now();
+    function tick(now) {
+      const elapsed = now - start;
+      const progress = Math.min(elapsed / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      const current = Math.round(eased * target);
+      if (sep) {
+        el.textContent = current.toLocaleString();
+      } else {
+        el.textContent = current;
+      }
+      if (progress < 1) requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  }
+
+  /* ---- Bar chart fill animation ---- */
+  const bars = document.querySelectorAll('.data-bar-fill');
+  const barObserver = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        entry.target.style.width = entry.target.getAttribute('data-width');
+        barObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.3 });
+  bars.forEach(function(el) { barObserver.observe(el); });
+
+  /* ---- FAQ accordion ---- */
+  document.querySelectorAll('.faq-question').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      const item = btn.parentElement;
+      const answer = item.querySelector('.faq-answer');
+      const isOpen = item.classList.contains('open');
+
+      // close all
+      document.querySelectorAll('.faq-item.open').forEach(function(openItem) {
+        openItem.classList.remove('open');
+        openItem.querySelector('.faq-answer').style.maxHeight = '0';
+      });
+
+      if (!isOpen) {
+        item.classList.add('open');
+        answer.style.maxHeight = answer.scrollHeight + 'px';
+      }
+    });
+  });
+
+})();
+</script>
+</body>
+</html>
